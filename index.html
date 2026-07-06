@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="name">
+<link rel="preload" as="image" href="">
+
+<style>
+:root {
+  --fs-xs: clamp(0.75rem, 0.9vw, 0.85rem);
+  --fs-sm: clamp(0.9rem, 1.1vw, 1rem);
+  --fs-md: clamp(1rem, 1.3vw, 1.2rem);
+  --fs-lg: clamp(1.4rem, 2vw, 2rem);
+  --fs-xl: clamp(2rem, 4vw, 3rem);
+}
+
+body, html {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: var(--fs-md);
+  overflow-x: hidden;
+  text-align: center;
+}
+
+.hero-video {
+  position: relative;
+  height: 50vh;
+  overflow: hidden;
+}
+
+.hero-video::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,0.8),
+      rgba(0,0,0,0.4),
+      transparent
+    ),
+    rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+.hero-video video {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.5) contrast(1.1);
+}
+
+.hero-text h1 {
+  font-size: var(--fs-xl);
+  color: white;
+}
+
+.hero-text {
+  font-size: var(--fs-md);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  z-index: 1; /* ensures text stays above video */
+}
+
+.gallerygrid {
+  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  /*max-width: 1920px;*/
+  margin: 0 auto;
+  flex: 1;
+  align-content: start;
+  grid-auto-rows: max-content;
+}
+
+div.galleryitem {
+  display: flex;
+  flex-direction: column;
+}
+
+div.galleryitem img,
+div.galleryitem video {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+div.galleryitem img:hover,
+div.galleryitem video:hover {
+  filter: brightness(0.75);
+}
+
+.media:hover {
+  transform: scale(1.1);
+}
+
+.media {
+  position: relative;
+  transition: transform 0.5s ease;
+}
+
+.media video {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+}
+
+.desc {
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  padding: 0 0.5rem 0 0.5rem;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+
+  color: #fff;
+  font-size: var(--fs-sm);
+
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.85),
+    rgba(0,0,0,0.3),
+    transparent
+  );
+
+  opacity: 0;
+  transform: translateY(20%);
+  transition: all 0.5s ease;
+}
+
+.media:hover .desc {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.modal {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  /*gap: 10px;*/
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal img,
+.modal video{
+  max-width:90%;
+  max-height:90%;
+  border-radius:0px;
+  user-select: none;
+}
+
+.close{
+  position:absolute;
+  top:20px;
+  right:35px;
+  color:white;
+  font-size:40px;
+  cursor:pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.caption{
+  /* margin-top: 15px;  adds space above text margin-top: auto;*/
+  color:white;
+  font-size: var(--fs-md);
+  width:100%;
+  max-width: 80%;
+  user-select: text;
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  padding: 10px;
+  transform: translateY(-50%);
+}
+
+.prev { left: 20px; }
+.next { right: 20px; }
+
+.prev:hover, .next:hover {
+  color: #aaa;
+}
+
+.footer {
+  font-size: var(--fs-xs);
+  margin-top: auto;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+
+.footer a:link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: gainsboro;
+  text-decoration: none;
+}
+
+.footer a:active {
+  color: grey;
+  text-decoration: none;
+}
+
+.footer a.active {
+  color: gray;
+}
+
+.footer a::before,
+.footer a::after {
+  color: white; 
+}
+
+.footer a:first-child::before {
+  content: "| ";
+}
+
+.footer a + a::before {
+  content: " | ";
+}
+
+.footer a:last-child::after {
+  content: " |";
+}
+
+</style>
+
+<body>
+
+<div class="hero-video">
+  <video autoplay muted loop playsinline oncontextmenu="return false;" controlsList="nodownload" disablePictureInPicture>
+    <source src="media/HEROVID.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="hero-text">
+    <h1>ARANS PORTFOLIO</h1>
+    <p></p>
+  </div>
+</div>
+
+<div class="gallerygrid" id="gallery"></div>
+
+<div id="modal" class="modal">
+  <span class="close">&times;</span>
+  <img id="modal-img">
+  <video id="modal-video" controls style="display:none;">
+    <source id="modal-video-source" src="" type="video/mp4">
+  </video>
+  <div class="caption"></div>
+  <span class="prev">&#10094;</span>
+  <span class="next">&#10095;</span>
+</div>
+
+<div class="footer">
+  <p>
+    <a href="index.html" class="active">Portfolio</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Use</a>
+  </p>
+</div>
+
+<script>
+const portfolioItems = [
+  {
+    type: "video",
+    src: "media/AR.mp4",
+    desc: "Augmented reality (AR) prototype app: integrates AR marker recognition, object interaction, and educational content with real-time UI feedback."
+  },
+  {
+    type: "video",
+    src: "media/GRPH.mp4",
+    desc: "Custom textures, recreated shadertoy shader and blueprints implemented in Unreal."
+  },
+  {
+    type: "video",
+    src: "media/PHYS.mp4",
+    desc: "Simulating a brick wall reinforced by steel columns and a player-controlled wrecking ball crane."
+  },
+  {
+    type: "video",
+    src: "media/MAT.mp4",
+    desc: "Unreal textures with sin movement applied."
+  },
+  {
+    type: "video",
+    src: "media/PRGE.mp4",
+    desc: "A Dragon with rotating wings via a custom control rig and destructible house that procedurally spawn. Fire is a particle system with sprite sheet created from Houdini fire simulation."
+  },
+  {
+    type: "video",
+    src: "media/UEX.mp4",
+    desc: "Digital prototype of my designed app."
+  },
+  {
+    type: "video",
+    src: "media/CONDEV.mp4",
+    desc: "First person shooting mechanics, Resource management, enemy/player health and more derived mechanics like the gun switching system or specific enemy spawning developed by me for use in a team project."
+  },
+  {
+    type: "video",
+    src: "media/AI.mp4",
+    desc: "Linear search added to the PacMan  AI mode in NetLogo. Will go after pellet when in line of sight, otherwise it “randomly” searches."
+  },
+  {
+    type: "video",
+    src: "media/TSEN.mp4",
+    desc: "Created the backend for UI based minigames timers, logging user input to click at certain times/beats or a total amount within a time limit. Developed gameplay for minigames, 2D movement control, collider manipulation, player/enemy health with projectile mechanics. To be implemented within a team project."
+  },
+  {
+    type: "video",
+    src: "media/SDB.mp4",
+    desc: "Database designed using Entity Relationship Modelling technique. The relational system models and manages data by linking related data across multiple tables through keys and relationships, searchable via SQL statements."
+  },
+  {
+    type: "video",
+    src: "media/GAMPROG.mp4",
+    desc: "C++ SDL game: player moves to evade a perusing enemy, a powerup is spawned after a time limit. Sound effects/music and a main menu. "
+  },
+  {
+    type: "video",
+    src: "media/GAMDEV.mp4",
+    desc: "Unity game where you switch between the forms via collision. Sphere has standard movement, and cannot take damage. Square can’t jump and can only Melee attack. Rectangle can fly and can shoot projectiles. Upon taking damage in the Ranged and Melee forms, you revert back to Intermediate. In the Boss level the Square form can shoot projectiles."
+  },
+  {
+    type: "video",
+    src: "media/VR.mp4",
+    desc: "Built/expanded the VR scene. Optimized the scripting/user experience, added cars (wheel animations, audio, and traffic). Vehicles have also been programmed to turn. Pedestrian and vehicle models respawn and follow routes (cars will turn at streets and respond accordingly to traffic lights) will stop/reposition when in proximity with colliders and shape casts."
+  },
+  {
+    type: "video",
+    src: "media/GAMDES.mp4",
+    desc: "Created a new level and a powerup that adds a counteractive force upon the object, to make it seem as if the player has had all gravity removed, in a Unity project."
+  },
+];
+
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
+const modalVideo = document.getElementById("modal-video");
+const modalVideoSource = document.getElementById("modal-video-source");
+const caption = modal.querySelector(".caption");
+const closeBtn = modal.querySelector(".close");
+let currentIndex = 0;
+const galleryItems = document.querySelectorAll(".galleryitem video");
+
+modalVideo.autoplay = true;
+modalVideo.loop = true;
+modalVideo.muted = true;
+modalVideo.controls = false;
+modalVideo.play(); 
+modalVideo.oncontextmenu = () => false;
+modalVideo.setAttribute("controlsList", "nodownload");
+modalVideo.disablePictureInPicture = true;
+
+function closeModal() {
+  modal.classList.remove("show");
+
+  // stop video
+  modalVideo.pause();
+  modalVideo.currentTime = 0;
+}
+
+const gallery = document.getElementById("gallery");
+
+portfolioItems.forEach((item, index) => {
+  const galleryItem = document.createElement("div");
+  galleryItem.className = "galleryitem";
+
+  galleryItem.innerHTML = `
+    <div class="media">
+      ${
+        item.type === "video"
+          ? `
+          <video autoplay muted loop playsinline oncontextmenu="return false;" controlsList="nodownload" disablePictureInPicture>
+            <source src="${item.src}" type="video/mp4">
+          </video>
+          `
+          : `
+          <img src="${item.src}" alt="">
+          `
+      }
+      <div class="desc">${item.desc}</div>
+    </div>
+  `;
+
+  gallery.appendChild(galleryItem);
+
+  galleryItem.querySelector(".media").addEventListener("click", () => {
+    currentIndex = index;
+    openModalWithIndex();
+  });
+});
+
+function openModalWithIndex() {
+  const item = portfolioItems[currentIndex];
+
+  modal.classList.add("show");
+  caption.textContent = item.desc;
+
+  if (item.type === "video") {
+    modalImg.style.display = "none";
+    modalVideo.style.display = "block";
+
+    modalVideoSource.src = item.src;
+    modalVideo.load();
+  } else {
+    modalVideo.style.display = "none";
+    modalImg.style.display = "block";
+
+    modalImg.src = item.src;
+  }
+}
+
+function changeSlide(direction) {
+  currentIndex += direction;
+
+  if (currentIndex >= portfolioItems.length) {
+    currentIndex = 0;
+  }
+
+  if (currentIndex < 0) {
+    currentIndex = portfolioItems.length - 1;
+  }
+
+  openModalWithIndex();
+}
+
+document.querySelector(".prev").addEventListener("click", () => {
+  changeSlide(-1);
+});
+
+document.querySelector(".next").addEventListener("click", () => {
+  changeSlide(1);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (!modal.classList.contains("show")) return;
+
+  if (e.key === "ArrowRight") changeSlide(1);
+  if (e.key === "ArrowLeft") changeSlide(-1);
+  if (e.key === "Escape") closeModal();
+});
+
+closeBtn.addEventListener("click", closeModal);
+modal.addEventListener("click", e => {
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+
+</script>
+
+</body>
+</html>
